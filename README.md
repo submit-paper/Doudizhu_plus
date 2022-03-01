@@ -7,3 +7,6 @@ he modification is in the folder. If you want to realize this part, just refer t
 
 ## Coach Network
 The modification is in the folder. If you want to realize this part, just refer to the code and most description is included in the notes. We only introduce the test code here. We use the files in the ``test'' folder which use os.system to execute relative commands. Every time new models are saved, a new round of test will be started.
+
+## Combination
+As opponent modeling and coach network works at different phases of the DouDzihu AI system. In this way, just make corresponding modifications as the two parts.
