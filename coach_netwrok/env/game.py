@@ -52,7 +52,7 @@ class GameEnv(object):
 
         self.bomb_num = 0
         self.last_pid = 'landlord'
-        self.init_cards = {}
+        self.init_cards = {}    # Record initial cards, the rest keeps the same as DouZero
 
     def card_play_init(self, card_play_data):
         self.info_sets['landlord'].player_hand_cards = \
@@ -62,7 +62,7 @@ class GameEnv(object):
         self.info_sets['landlord_down'].player_hand_cards = \
             card_play_data['landlord_down']
         self.three_landlord_cards = card_play_data['three_landlord_cards']
-        self.init_cards = card_play_data
+        self.init_cards = card_play_data         # Record initial cards
         self.get_acting_player_position()
         self.game_infoset = self.get_infoset()
 
