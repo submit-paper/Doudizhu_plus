@@ -8,7 +8,7 @@ def _format_observation(obs, device):
     z_batch = torch.from_numpy(obs['z_batch']).to(device)
     x_no_action = torch.from_numpy(obs['x_no_action'])
     z = torch.from_numpy(obs['z'])
-    init_landlord = torch.as_tensor(obs['init_cards']['landlord']).to(device)
+    init_landlord = torch.as_tensor(obs['init_cards']['landlord']).to(device)     # Add initial cards into the observation
     init_landlord_up = torch.as_tensor(obs['init_cards']['landlord_up']).to(device)
     init_landlord_down = torch.as_tensor(obs['init_cards']['landlord_down']).to(device)
     obs = {'x_batch': x_batch,
