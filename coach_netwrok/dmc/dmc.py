@@ -20,7 +20,7 @@ from .utils import get_batch, log, create_env, create_buffers, create_optimizers
 mean_episode_return_buf = {p:deque(maxlen=100) for p in ['landlord', 'landlord_up', 'landlord_down']}
 
 
-class ExceptionThread(threading.Thread):
+class ExceptionThread(threading.Thread):           # Log the condition of multithreading
 
     def __init__(self, target=None, name=None, args=()):
         threading.Thread.__init__(self)
@@ -52,7 +52,7 @@ def compute_loss(logits, targets):
     return loss
 
 
-def compute_acc(pred, label):
+def compute_acc(pred, label):   # Compute the accuracy of coach nework for log
     right = 0
     n = len(label)
     for i in range(n):
@@ -64,7 +64,7 @@ def compute_acc(pred, label):
                 right += 1
     return right / n
 
-def learn_coach(coach_actor_models, model, batch, optimizer, criterion, flags, lock):
+def learn_coach(coach_actor_models, model, batch, optimizer, criterion, flags, lock):  # Update the coach network, the implementation refers to original DouZero
     device = torch.device('cuda:'+str(flags.training_device))  
     landlord = torch.flatten(batch['init_landlord'].to(device), 0, 1)
     landlord_up = torch.flatten(batch['init_landlord_up'].to(device), 0, 1)
@@ -128,7 +128,7 @@ def learn(position,
             actor_model.get_model(position).load_state_dict(model.state_dict())
         return stats
 
-def train(flags):  
+def train(flags):        # The implementation of coach network refers to that of DouZero so that much code is similar 
     plogger = FileWriter(
         xpid=flags.xpid,
         xp_args=flags.__dict__,
@@ -248,7 +248,7 @@ def train(flags):
                 position_frames[position] += T * B
 
 
-    def coach_batch_and_learn(device, local_lock, learn_lock, lock=threading.Lock()):
+    def coach_batch_and_learn(device, local_lock, learn_lock, lock=threading.Lock()):   # Update the coach network
         nonlocal frames, position_frames, stats
         while frames < flags.total_frames:
             batch = get_batch(coach_free_queue[device], coach_full_queue[device], coach_buffers[device], flags, local_lock)
@@ -311,7 +311,7 @@ def train(flags):
         last_checkpoint_time = timer() - flags.save_interval * 60
         initial_time = timer() - flags.save_interval * 60
         flag = [0 for _ in range(5)]
-        while frames < flags.total_frames:
+        while frames < flags.total_frames:        # The threshold is determinded by the training steps.
             start_frames = frames
             steps = frames / 3200
             if steps > 20000 and steps< 40000 and flag[0] == 0:
@@ -343,7 +343,7 @@ def train(flags):
             start_time = timer()
             time.sleep(5)
             #print(coach_thresh.value)
-            if timer() - last_checkpoint_time > flags.save_interval * 60:  
+            if timer() - last_checkpoint_time > flags.save_interval * 60:   # When new models are saved, start a round of test
                 checkpoint(frames)
                 test_time = timer() - initial_time
                 last_checkpoint_time = timer()
