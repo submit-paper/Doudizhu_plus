@@ -27,7 +27,7 @@ NumOnes2Array = {0: np.array([0, 0, 0, 0]),
 
 
 
-class Logger(object):
+class Logger(object):       # Log the condition of the processes and print information
     level_relations = {
         'debug':logging.DEBUG,
         'info':logging.INFO,
@@ -106,7 +106,7 @@ def create_buffers(flags):
             buffers[device][position] = _buffers
     return buffers
 
-def create_coach_buffers(flags):
+def create_coach_buffers(flags):        # create buffers for coach network
     T_coach = flags.coach_length
     buffers = []
     for device in range(torch.cuda.device_count()):
@@ -162,7 +162,7 @@ def act(i, device, free_queue, full_queue, coach_free_queue, coach_full_queue, m
             init_landlord_up = obs['init_landlord_up'].unsqueeze(0)
             init_landlord_down = obs['init_landlord_down'].unsqueeze(0)
             share_lock.acquire()
-            gate = coach_thresh.value
+            gate = coach_thresh.value     # Get current threshold
             share_lock.release()
             with torch.no_grad():
                 pred_res = coach_model(init_landlord, init_landlord_down, init_landlord_up)
@@ -170,10 +170,10 @@ def act(i, device, free_queue, full_queue, coach_free_queue, coach_full_queue, m
             del init_landlord
             del init_landlord_down
             del init_landlord_up
-            if pred_win < gate or pred_win > 1 - gate:
+            if pred_win < gate or pred_win > 1 - gate:      # If the predicted winning probability if too low or too high, generate a new game
                 position, obs, env_output = env.initial()
             else:
-                init_landlord_buf.append(obs['init_landlord'])
+                init_landlord_buf.append(obs['init_landlord'])      # record the initial cards
                 init_landlord_down_buf.append(obs['init_landlord_down'])
                 init_landlord_up_buf.append(obs['init_landlord_up'])
                 win_pred_buf.append(pred_win.squeeze(0))
@@ -205,7 +205,7 @@ def act(i, device, free_queue, full_queue, coach_free_queue, coach_full_queue, m
                                 episode_return_buf[p].append(episode_return)
                                 target_buf[p].extend([episode_return for _ in range(diff)])
                         break
-            if size_coach > T_coach:
+            if size_coach > T_coach:    # Put data for coach network into buffers
                 index = coach_free_queue.get()
                 if index is None:
                     pass
