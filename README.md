@@ -10,3 +10,6 @@ The modification is in the folder. If you want to realize this part, just refer 
 
 ## Combination
 As opponent modeling and coach network works at different phases of the DouDzihu AI system. In this way, just make corresponding modifications as the two parts.
+
+##Bidding
+The modification is in the folder and a README.md file is also included. Please refer to it for more information.
